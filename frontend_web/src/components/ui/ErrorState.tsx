@@ -1,0 +1,2 @@
+import { Button } from './Button';
+export function ErrorState({ title = 'Não foi possível carregar', description = 'Confira a API ou tente novamente.', onRetry }: { title?: string; description?: string; onRetry?: () => void }) { return <div className="rounded-3xl border border-rose-100 bg-rose-50 p-8 text-center"><h3 className="text-lg font-bold text-rose-800">{title}</h3><p className="mt-2 text-rose-700">{description}</p>{onRetry && <Button className="mt-4" onClick={onRetry}>Tentar novamente</Button>}</div>; }

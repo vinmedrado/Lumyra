@@ -1,0 +1,2 @@
+import mark from '../../assets/branding/lumyra-icon.svg';
+export function LoadingState({ label = 'Carregando experiência Lumyra...' }: { label?: string }) { return <div className="rounded-[1.7rem] bg-white/90 p-8 text-center text-slate-500 shadow-soft dark:bg-white/5 dark:text-slate-300"><img src={mark} className="mx-auto mb-4 h-12 w-12 animate-pulse" alt="" />{label}<div className="mx-auto mt-6 h-3 max-w-sm rounded-full skeleton" /></div>; }

@@ -1,0 +1,127 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: lumyra_postgres
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_USER: lumyra
+      POSTGRES_PASSWORD: lumyra
+      POSTGRES_DB: lumyra
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lumyra -d lumyra"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build: .
+    container_name: lumyra_api
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: sqlite:////app/data/event_erp.sqlite3
+      STORAGE_PATH: /app/storage
+    ports:
+      - "8000:8000"
+    volumes:
+      - app_data:/app/data
+      - app_storage:/app/storage
+      - app_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  streamlit_admin:
+    build: .
+    container_name: lumyra_streamlit_admin
+    command: streamlit run app.py --server.address 0.0.0.0 --server.port 8501
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: sqlite:////app/data/event_erp.sqlite3
+      STORAGE_PATH: /app/storage
+      API_BASE_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    volumes:
+      - app_data:/app/data
+      - app_storage:/app/storage
+      - app_logs:/app/logs
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker:
+    build: .
+    container_name: lumyra_worker
+    command: python -m workers.worker --sleep 10
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: sqlite:////app/data/event_erp.sqlite3
+      STORAGE_PATH: /app/storage
+      WORKER_ID: lumyra-worker-docker
+    volumes:
+      - app_data:/app/data
+      - app_storage:/app/storage
+      - app_logs:/app/logs
+    restart: unless-stopped
+
+  scheduler:
+    build: .
+    container_name: lumyra_scheduler
+    command: python -c "import time; from services.scheduler_service import run_scheduler_tick; [run_scheduler_tick() or time.sleep(60) for _ in iter(int, 1)]"
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: sqlite:////app/data/event_erp.sqlite3
+      STORAGE_PATH: /app/storage
+    volumes:
+      - app_data:/app/data
+      - app_storage:/app/storage
+      - app_logs:/app/logs
+    restart: unless-stopped
+
+  frontend_web:
+    build:
+      context: ./frontend_web
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+        VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:8000/ws}
+    container_name: lumyra_frontend_web
+    ports:
+      - "5173:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: lumyra_nginx
+    profiles: ["production"]
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend_web
+      - api
+      - streamlit_admin
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  app_data:
+  app_storage:
+  app_logs:

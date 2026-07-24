@@ -1,0 +1,16 @@
+{
+  "name": "Lumyra — Modern Event Operations Platform",
+  "short_name": "Lumyra",
+  "description": "Plataforma premium para operação de eventos, noivos, convidados, WhatsApp, documentos e analytics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F8FB",
+  "theme_color": "#4B1D95",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

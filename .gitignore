@@ -1,0 +1,51 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local databases and generated data
+*.sqlite
+*.sqlite3
+*.db
+data/*
+!data/.gitkeep
+logs/*
+!logs/.gitkeep
+storage/*
+!storage/.gitkeep
+!storage/tenants/
+!storage/tenants/.gitkeep
+!storage/exports/
+!storage/exports/.gitkeep
+
+# Frontend
+node_modules/
+frontend_web/node_modules/
+frontend_web/dist/
+frontend_web/build/
+*.tsbuildinfo
+frontend_web/.env
+frontend_web/.env.*
+!frontend_web/.env.example
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Reports / temporary artifacts
+.coverage
+htmlcov/
+*.tmp
+*.bak

@@ -1,0 +1,36 @@
+# ── Interface ────────────────────────────────────────────────
+streamlit>=1.35.0
+
+# ── UI Desktop (conexão com Assessoria VIP) ──────────────────
+PyQt6>=6.7.0
+PyQt6-WebEngine>=6.7.0
+
+# ── Dados ────────────────────────────────────────────────────
+pandas>=2.2.0
+
+# ── HTTP / GraphQL ───────────────────────────────────────────
+requests>=2.31.0
+
+# ── PDF ──────────────────────────────────────────────────────
+pypdf>=4.0.0
+reportlab>=4.1.0
+
+# ── Utilitários ──────────────────────────────────────────────
+python-dotenv>=1.0.0
+
+openpyxl>=3.1.0
+
+fastapi>=0.110.0
+uvicorn>=0.27.0
+pytest>=8.0.0
+httpx>=0.28.1,<1.0
+
+sqlalchemy>=2.0.0
+alembic>=1.13.0
+psycopg2-binary>=2.9.9
+passlib[bcrypt]>=1.7.4
+pydantic-settings>=2.0.0
+
+PyJWT>=2.8.0
+
+python-multipart>=0.0.9

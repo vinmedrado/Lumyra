@@ -1,0 +1,5 @@
+import { Card } from '../../components/ui/Card';
+import { MetricCard } from '../../components/ui/MetricCard';
+import { PageHeader } from '../../components/ui/PageHeader';
+import { ProgressBar } from '../../components/ui/ProgressBar';
+export function AnalyticsPage() { return <><PageHeader title="Analytics" subtitle="Tendências e comparativos conectáveis aos snapshots históricos do backend." /><div className="grid gap-4 md:grid-cols-3"><MetricCard metric={{ label: 'Taxa RSVP', value: '74%', helper: '+5 p.p. em 7 dias', status: 'success' }} /><MetricCard metric={{ label: 'Resposta campanha', value: '81%', helper: 'última campanha', status: 'info' }} /><MetricCard metric={{ label: 'Custo/confirmado', value: 'R$ 446', helper: 'estimado', status: 'neutral' }} /></div><Card className="mt-6"><h2 className="text-xl font-black text-ink">Evolução histórica</h2><div className="mt-5 space-y-5"><ProgressBar value={74} label="RSVP" /><ProgressBar value={81} label="Mensagens respondidas" /><ProgressBar value={63} label="Financeiro quitado" /></div></Card></>; }

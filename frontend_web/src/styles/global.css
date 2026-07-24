@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --lumyra-purple:#4B1D95; --lumyra-purple-light:#8B5CF6; --elegant-gold:#B88937;
+  --midnight-black:#181210; --ice-white:#F7F8FB; --soft-lilac:#F1ECFF;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+html.dark { color-scheme: dark; }
+body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 15% 0%, rgba(139,92,246,.12), transparent 28%), #F7F8FB; color: #181210; }
+html.dark body { background: radial-gradient(circle at 16% 4%, rgba(139,92,246,.20), transparent 25%), #09060f; color: #F7F8FB; }
+* { box-sizing: border-box; }
+::selection { background: rgba(184,137,55,.32); }
+.lumyra-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -.045em; }
+.lumyra-glass { background: rgba(255,255,255,.76); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.62); }
+html.dark .lumyra-glass { background: rgba(20,13,34,.70); border-color: rgba(255,255,255,.10); }
+.card-hover { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: 0 22px 70px rgba(75, 29, 149, .16); border-color: rgba(184,137,55,.30); }
+html.dark .card-hover:hover { box-shadow: 0 22px 70px rgba(0, 0, 0, .42); }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.skeleton { position: relative; overflow: hidden; background: rgba(139, 92, 246, .10); border-radius: 1rem; }
+.skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.54), transparent); animation: shimmer 1.6s infinite; }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.premium-gradient { background: radial-gradient(circle at top left, rgba(139,92,246,.20), transparent 30%), radial-gradient(circle at bottom right, rgba(184,137,55,.16), transparent 24%); }
+.lumyra-hero { background: radial-gradient(circle at 18% 14%, rgba(139,92,246,.34), transparent 30%), radial-gradient(circle at 82% 8%, rgba(184,137,55,.24), transparent 26%), linear-gradient(135deg, #181210 0%, #2B1458 56%, #4B1D95 100%); }
+.lumyra-gold-text { background: linear-gradient(90deg, #F8E7B1, #B88937); -webkit-background-clip: text; color: transparent; }
+.lumyra-focus:focus { outline: 3px solid rgba(184,137,55,.36); outline-offset: 2px; }
+.live-dot { animation: pulseLive 1.5s ease-in-out infinite; }
+@media (max-width: 768px) { .responsive-grid { grid-template-columns: 1fr !important; } }
