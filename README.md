@@ -28,6 +28,8 @@ O deploy público executa o frontend em modo de portfólio, sem backend hospedad
 Use os acessos de demonstração na tela de login ou abra o
 [convite familiar interativo](https://lumyra-events.netlify.app/guest/lumyra-demo-invitation-token).
 As interações públicas são simuladas somente no navegador e não armazenam dados.
+Cada atualização da branch `main` validada no GitHub dispara automaticamente um
+novo build de produção no Netlify.
 
 ---
 

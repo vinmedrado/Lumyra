@@ -37,6 +37,10 @@ Ajuste variáveis:
 O `netlify.toml` da raiz já define `frontend_web` como base, executa
 `npm run build`, publica `dist` e trata as rotas da SPA.
 
+O site `lumyra-events` está conectado à branch `main` de
+`github.com/vinmedrado/Lumyra` por deploy key somente leitura e webhook. Pushes e
+pull requests disparam builds automaticamente.
+
 No painel do Netlify, configure antes do deploy:
 
 - `VITE_API_BASE_URL=https://api.seu-dominio`
