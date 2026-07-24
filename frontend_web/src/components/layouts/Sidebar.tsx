@@ -1,26 +1,36 @@
 import { Link, useLocation } from 'wouter';
-import { Activity, BarChart3, Bell, CalendarDays, FileText, Heart, Home, Lightbulb, MessageCircle, Music2, Settings, ShieldCheck, Table2, Users, Wallet, Zap } from 'lucide-react';
+import { Activity, BarChart3, Bell, CalendarDays, FileText, Heart, Home, Lightbulb, MessageCircle, Music2, Settings, ShieldCheck, Table2, Users, Wallet, Zap, type LucideIcon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import logo from '../../assets/branding/lumyra-logo.svg';
 import logoDark from '../../assets/branding/lumyra-logo-dark.svg';
 import mark from '../../assets/branding/lumyra-icon.svg';
 
-const adminGroups = [
+type NavItem = readonly [string, string, LucideIcon];
+
+const adminGroups: ReadonlyArray<{ title: string; items: readonly NavItem[] }> = [
   { title: 'Operação', items: [['Dashboard', '/admin/dashboard', Home], ['Eventos', '/admin/events', CalendarDays], ['Convidados', '/admin/guests', Users], ['Mesas', '/admin/tables', Table2], ['Formulários', '/admin/forms', FileText]] },
   { title: 'Comunicação', items: [['Campanhas', '/admin/campaigns', MessageCircle], ['WhatsApp', '/admin/whatsapp', MessageCircle], ['Playlist', '/admin/playlist', Music2], ['Notificações', '/admin/notifications', Bell]] },
   { title: 'Gestão', items: [['Financeiro', '/admin/financial', Wallet], ['Documentos', '/admin/documents', FileText]] },
   { title: 'Inteligência', items: [['Analytics', '/admin/analytics', BarChart3], ['Insights', '/admin/insights', Lightbulb], ['Command Center', '/admin/command-center', Zap], ['Activity Feed', '/admin/activity', Activity], ['Auditoria', '/admin/audit', ShieldCheck], ['Configurações', '/admin/settings', Settings]] }
-] as const;
-const clientItems = [['Início', '/client/dashboard', Heart], ['Convidados', '/client/guests', Users], ['RSVP', '/client/rsvp', MessageCircle], ['Mesas', '/client/tables', Table2], ['Timeline', '/client/timeline', CalendarDays], ['Documentos', '/client/documents', FileText], ['Financeiro', '/client/financial', Wallet], ['Mensagens', '/client/messages', MessageCircle], ['Playlist', '/client/playlist', Music2]] as const;
-function LinkItem({ item }: { item: readonly [string, string, any] }) {
+];
+const clientItems: readonly NavItem[] = [['Início', '/client/dashboard', Heart], ['Convidados', '/client/guests', Users], ['RSVP', '/client/rsvp', MessageCircle], ['Mesas', '/client/tables', Table2], ['Timeline', '/client/timeline', CalendarDays], ['Documentos', '/client/documents', FileText], ['Financeiro', '/client/financial', Wallet], ['Mensagens', '/client/messages', MessageCircle], ['Playlist', '/client/playlist', Music2]];
+function LinkItem({ item }: { item: NavItem }) {
   const [label, to, Icon] = item;
   const [location] = useLocation();
   const isActive = location === to;
   return <Link href={to} className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold transition ${isActive ? 'bg-brand-800 text-white shadow-glow' : 'text-slate-600 hover:bg-brand-50 hover:text-brand-800 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`}><Icon size={18} />{label}</Link>;
 }
+function MobileLinkItem({ item }: { item: NavItem }) {
+  const [label, to, Icon] = item;
+  const [location] = useLocation();
+  const isActive = location === to;
+  return <Link href={to} className={`flex min-w-[76px] shrink-0 flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-black transition ${isActive ? 'bg-brand-800 text-white' : 'text-slate-500 dark:text-slate-300'}`}><Icon size={18} /><span className="max-w-[70px] truncate">{label}</span></Link>;
+}
 export function Sidebar({ mode }: { mode: 'admin' | 'client' }) {
   const { user } = useAuth();
-  return <aside className="hidden min-h-screen w-72 shrink-0 border-r border-brand-100 bg-ice/90 p-5 backdrop-blur dark:border-white/10 dark:bg-[#09060f]/95 lg:block">
+  const mobileItems = mode === 'admin' ? adminGroups.flatMap(group => group.items) : clientItems;
+  return <>
+  <aside className="hidden min-h-screen w-72 shrink-0 border-r border-brand-100 bg-ice/90 p-5 backdrop-blur dark:border-white/10 dark:bg-[#09060f]/95 lg:block">
     <div className="mb-7 rounded-[1.8rem] bg-white p-4 shadow-soft dark:bg-white/10">
       <img src={logo} alt="Lumyra" className="h-16 w-auto dark:hidden" />
       <img src={logoDark} alt="Lumyra" className="hidden h-16 w-auto dark:block" />
@@ -32,5 +42,9 @@ export function Sidebar({ mode }: { mode: 'admin' | 'client' }) {
     </div>
     {mode === 'admin' ? adminGroups.map(group => <div className="mb-5" key={group.title}><p className="mb-2 px-2 text-xs font-black uppercase tracking-widest text-gold-600">{group.title}</p><nav className="space-y-1">{group.items.map(item => <LinkItem key={item[1]} item={item} />)}</nav></div>) : <nav className="space-y-1">{clientItems.map(item => <LinkItem key={item[1]} item={item} />)}</nav>}
     <p className="mt-10 text-center text-xs text-slate-400">Lumyra v1.2 · Realtime Premium</p>
-  </aside>;
+  </aside>
+  <nav aria-label="Navegação principal" className="fixed inset-x-3 bottom-3 z-40 flex gap-1 overflow-x-auto rounded-[1.5rem] border border-brand-100 bg-white/95 p-2 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-[#09060f]/95 lg:hidden">
+    {mobileItems.map(item => <MobileLinkItem key={item[1]} item={item} />)}
+  </nav>
+  </>;
 }

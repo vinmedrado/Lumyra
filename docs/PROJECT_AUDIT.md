@@ -9,13 +9,13 @@ média de projetos de portfólio. A arquitetura demonstra experiência com front
 API-first, backend modular, autenticação, multi-tenancy, jobs, WebSocket e domínio
 de negócio real.
 
-O nível atual do repositório é **pleno forte, com sinais de senioridade em produto
-e arquitetura**. Ainda não deve ser apresentado como um SaaS pronto para produção:
-há telas React que são estados de integração, duas abordagens de persistência em
-transição e lacunas de operação que precisam ser fechadas antes de clientes reais.
+O nível atual do repositório é **pleno forte, com sinais de senioridade em produto,
+arquitetura e experiência de demonstração**. Ainda não deve ser apresentado como
+um SaaS pronto para produção: duas abordagens de persistência seguem em transição e
+há lacunas operacionais a fechar antes de atender clientes reais.
 
-Para portfólio, o projeto está tecnicamente publicável depois de gerar screenshots,
-configurar os serviços de deploy e fazer o primeiro commit revisado.
+Para portfólio, o projeto está publicado no GitHub e no Netlify, com CI e deploy
+contínuo validados.
 
 ## Inventário revisado
 
@@ -38,9 +38,9 @@ configurar os serviços de deploy e fazer o primeiro commit revisado.
 | UI/identidade visual | 8/10 | Design system consistente e apresentação premium |
 | Arquitetura | 7/10 | Boa separação, mas persistência ainda em consolidação |
 | Backend e segurança | 7/10 | JWT, tenant boundary e portal público testados |
-| Frontend funcional | 6/10 | Fluxos centrais reais; 17 rotas ainda usam páginas genéricas |
+| Frontend funcional | 8/10 | Todos os módulos principais possuem dados e interações integradas entre personas |
 | Testes e qualidade | 7/10 | Backend, componentes, lint, typecheck e build automatizados |
-| DevOps/deploy | 6/10 | CI e manifests existem; falta validar deploy remoto real |
+| DevOps/deploy | 8/10 | GitHub Actions e deploy contínuo do Netlify validados |
 | Prontidão para produção | 5/10 | Requer PostgreSQL, observabilidade, storage e hardening |
 
 ## Melhorias aplicadas durante a auditoria
@@ -56,18 +56,21 @@ configurar os serviços de deploy e fazer o primeiro commit revisado.
 - Adicionados testes de integração do portal público e testes de componentes React.
 - Adicionados ESLint real, typecheck, testes, build e auditoria de dependências na CI.
 - Adicionados `.dockerignore`, `.editorconfig`, `.nvmrc`, Netlify e documentação ADR.
+- Substituídas as 17 rotas genéricas por módulos demonstráveis e responsivos.
+- Criado estado demo versionado em `localStorage`, com sincronização entre abas.
+- Integrados RSVP, sugestões musicais, mesas, financeiro, documentos, campanhas,
+  notificações, activity feed e auditoria.
+- Publicados repositório GitHub e frontend Netlify com deploy contínuo.
 
 ## Riscos e dívida técnica restantes
 
 ### Prioridade alta — antes de chamar de produto
 
-1. Concluir as 17 rotas React que ainda usam `GenericAdminPage` ou
-   `GenericClientPage`, priorizando eventos, mesas, financeiro e documentos.
-2. Finalizar a migração de todos os repositórios para SQLAlchemy/PostgreSQL e
+1. Finalizar a migração de todos os repositórios para SQLAlchemy/PostgreSQL e
    testar isolamento multi-tenant no banco de produção.
-3. Separar dependências Python por runtime/dev e gerar lock reprodutível.
-4. Substituir credenciais e providers de demonstração no ambiente publicado.
-5. Publicar o backend em Render, Railway, Fly.io ou infraestrutura equivalente;
+2. Separar dependências Python por runtime/dev e gerar lock reprodutível.
+3. Substituir credenciais e providers de demonstração em um eventual ambiente real.
+4. Publicar o backend em Render, Railway, Fly.io ou infraestrutura equivalente;
    o Netlify hospeda somente o frontend estático.
 
 ### Prioridade média — antes de divulgar amplamente
@@ -101,19 +104,19 @@ Backend provider
   └─ FastAPI + worker + scheduler + PostgreSQL + storage persistente
 ```
 
-Para uma primeira demonstração sem custo operacional alto, publicar o frontend no
-Netlify e a API em um provedor de containers, mantendo `DEMO_MODE=true` e dados
-exclusivamente fictícios. Não usar SQLite efêmero como banco de uma demonstração
-que precise preservar respostas entre reinícios.
+Na demonstração pública atual, o Netlify entrega somente o frontend e os dados
+fictícios são persistidos no navegador. O backend permanece no GitHub como evidência
+arquitetural e pode ser executado localmente. Para uma versão comercial, publicar a
+API em um provedor de containers e não usar SQLite efêmero.
 
 ## Critério de release de portfólio
 
 - CI verde em `main`.
 - Nenhum segredo ou banco rastreado.
 - Landing, login, dashboard admin, dashboard cliente e RSVP funcionando.
-- Links públicos do frontend e da API documentados no README.
+- Link público do frontend documentado no README.
 - Screenshots reais, descrição curta do problema e decisões arquiteturais.
-- Aviso explícito de que módulos genéricos são roadmap, não funcionalidades prontas.
+- Aviso explícito de que o backend não está hospedado na demonstração pública.
 
 ## Comandos de qualidade
 

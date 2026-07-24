@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Check, Music2, RefreshCw, X } from 'lucide-react';
-import { musicSuggestionsApi } from '../../services/api';
+import { demoActions, useDemoStore } from '../../demo/demoStore';
+import { hasStoredAccessToken, musicSuggestionsApi } from '../../services/api';
 import { Button } from './Button';
 import { Card } from './Card';
 import { EmptyState } from './EmptyState';
@@ -24,11 +25,14 @@ function statusLabel(status: string) {
 }
 
 export function MusicSuggestionsList({ eventId = 1, readonly = false }: { eventId?: number; readonly?: boolean }) {
+  const demoState = useDemoStore();
+  const isStaticDemo = !hasStoredAccessToken();
   const [items, setItems] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
+    if (isStaticDemo) return;
     setLoading(true); setError('');
     try {
       const response = await musicSuggestionsApi.list({ event_id: eventId, limit: 100 });
@@ -36,23 +40,38 @@ export function MusicSuggestionsList({ eventId = 1, readonly = false }: { eventI
     } catch (err: any) {
       setError(err?.response?.data?.detail || 'Não foi possível carregar sugestões.');
     } finally { setLoading(false); }
-  }, [eventId]);
+  }, [eventId, isStaticDemo]);
 
   async function update(id: number, status: string) {
+    if (isStaticDemo) {
+      demoActions.updateMusicSuggestionStatus(id, status as 'approved' | 'added' | 'rejected');
+      return;
+    }
     await musicSuggestionsApi.updateStatus(id, status);
     await load();
   }
 
   useEffect(() => { void load(); }, [load]);
 
+  const displayItems: Suggestion[] = isStaticDemo
+    ? demoState.musicSuggestions.map(item => ({
+      id: item.id,
+      guest_name: item.guest,
+      song_name: item.song,
+      artist_name: item.artist,
+      message: item.message,
+      status: item.status,
+    }))
+    : items;
+
   return <Card>
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
       <div className="flex items-center gap-3"><div className="grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand-800 dark:bg-white/10 dark:text-gold-100"><Music2 /></div><div><h2 className="text-xl font-black text-ink dark:text-white">Sugestões dos convidados</h2><p className="text-sm text-slate-500 dark:text-slate-300">Curadoria musical enviada pelo portal do convidado.</p></div></div>
-      <Button type="button" variant="secondary" onClick={load}><RefreshCw size={16} /> Atualizar</Button>
+      <Button type="button" variant="secondary" onClick={load}><RefreshCw size={16} /> {isStaticDemo ? 'Sincronizado' : 'Atualizar'}</Button>
     </div>
     {error && <p className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-700 dark:bg-red-400/10 dark:text-red-100">{error}</p>}
-    {loading ? <p className="text-sm text-slate-500 dark:text-slate-300">Carregando sugestões...</p> : items.length === 0 ? <EmptyState title="Nenhuma sugestão ainda" description="Quando os convidados enviarem músicas pelo portal, elas aparecerão aqui." /> : <div className="space-y-3">
-      {items.map(item => <div key={item.id} className="rounded-3xl border border-brand-100 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-white/10">
+    {loading ? <p className="text-sm text-slate-500 dark:text-slate-300">Carregando sugestões...</p> : displayItems.length === 0 ? <EmptyState title="Nenhuma sugestão ainda" description="Quando os convidados enviarem músicas pelo portal, elas aparecerão aqui." /> : <div className="space-y-3">
+      {displayItems.map(item => <div key={item.id} className="rounded-3xl border border-brand-100 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-white/10">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-lg font-black text-ink dark:text-white">{item.song_name}</p>

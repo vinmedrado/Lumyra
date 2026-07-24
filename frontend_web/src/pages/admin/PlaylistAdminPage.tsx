@@ -6,12 +6,22 @@ import { FormInput } from '../../components/ui/FormInput';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { SpotifyPlaylistCard } from '../../components/ui/SpotifyPlaylistCard';
 import { MusicSuggestionsList } from '../../components/ui/MusicSuggestionsList';
+import { demoActions, useDemoStore } from '../../demo/demoStore';
+import { hasStoredAccessToken } from '../../services/api';
 
 export function PlaylistAdminPage() {
-  const [url, setUrl] = useState('https://open.spotify.com/');
-  const [title, setTitle] = useState('Playlist do casamento');
-  const [description, setDescription] = useState('Quem faz a festa é você: salve a playlist do casamento e compartilhe suas melhores músicas para esse momento ficar ainda mais inesquecível.');
-  const [etiquette, setEtiquette] = useState('Pedimos apenas bom senso e carinho: escolha músicas que combinem com o clima do casamento e respeitem todos os convidados.');
+  const demoState = useDemoStore();
+  const isStaticDemo = !hasStoredAccessToken();
+  const [url, setUrl] = useState(demoState.playlist.url);
+  const [title, setTitle] = useState(demoState.playlist.title);
+  const [description, setDescription] = useState(demoState.playlist.description);
+  const [etiquette, setEtiquette] = useState(demoState.playlist.etiquette);
+  const [saved, setSaved] = useState(false);
+
+  function save() {
+    if (isStaticDemo) demoActions.updatePlaylist({ url, title, description, etiquette });
+    setSaved(true);
+  }
 
   return <>
     <PageHeader eyebrow="Experiência musical" title="Playlist e QR Code" subtitle="Configure o link da playlist colaborativa e visualize como os noivos e convidados verão a experiência." />
@@ -23,8 +33,8 @@ export function PlaylistAdminPage() {
           <FormInput label="Título" value={title} onChange={event => setTitle(event.target.value)} />
           <label className="block text-sm font-bold text-slate-700 dark:text-slate-200">Mensagem para convidados<textarea value={description} onChange={event => setDescription(event.target.value)} className="mt-2 min-h-28 w-full rounded-3xl border border-brand-100 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-500 dark:border-white/10 dark:bg-white/10" /></label>
           <label className="block text-sm font-bold text-slate-700 dark:text-slate-200">Aviso de respeito musical<textarea value={etiquette} onChange={event => setEtiquette(event.target.value)} className="mt-2 min-h-24 w-full rounded-3xl border border-brand-100 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-500 dark:border-white/10 dark:bg-white/10" /></label>
-          <Button type="button">Salvar configuração</Button>
-          <p className="text-xs text-slate-400">Este patch não altera fluxos existentes. A persistência via API já foi preparada em /playlists para ativação quando desejado.</p>
+          <Button type="button" onClick={save}>Salvar configuração</Button>
+          <p className={`text-xs ${saved ? 'font-bold text-emerald-600' : 'text-slate-400'}`}>{saved ? 'Configuração salva e compartilhada com os noivos e convidados.' : isStaticDemo ? 'As alterações ficam somente neste navegador.' : 'A configuração será persistida pela API.'}</p>
         </div>
       </Card>
       <SpotifyPlaylistCard playlist={{ playlist_url: url, title, description, etiquette_message: etiquette }} variant="admin" />

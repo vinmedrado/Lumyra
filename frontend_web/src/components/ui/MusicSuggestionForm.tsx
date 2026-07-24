@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle2, Music2, Send } from 'lucide-react';
+import { demoActions } from '../../demo/demoStore';
 import { isDemoMode, musicSuggestionsApi } from '../../services/api';
 import { DEMO_GUEST_TOKEN } from '../../lib/demoData';
 import { Button } from './Button';
@@ -23,7 +24,9 @@ export function MusicSuggestionForm({ guestToken, guestName = '' }: { guestToken
     }
     setLoading(true);
     try {
-      if (!(isDemoMode() && guestToken === DEMO_GUEST_TOKEN)) {
+      if (isDemoMode() && guestToken === DEMO_GUEST_TOKEN) {
+        demoActions.addMusicSuggestion(name || 'Convidado', song, artist, message);
+      } else {
         await musicSuggestionsApi.createPublic({
           guest_token: guestToken,
           guest_name: name || 'Convidado',

@@ -7,7 +7,7 @@ import { LoadingState } from '../../components/ui/LoadingState';
 import { MetricCard } from '../../components/ui/MetricCard';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { ProgressBar } from '../../components/ui/ProgressBar';
-import { demoInsights } from '../../lib/demoData';
+import { getDemoStats, useDemoStore } from '../../demo/demoStore';
 import { analyticsApi, eventsApi, hasStoredAccessToken, insightsApi } from '../../services/api';
 import type { AnalyticsOverview, EventSummary, Insight, Metric } from '../../types/domain';
 
@@ -19,6 +19,8 @@ type ClientState = {
 
 export function ClientDashboard() {
   const isVisualDemo = !hasStoredAccessToken();
+  const demo = useDemoStore();
+  const demoStats = getDemoStats(demo);
   const [state, setState] = useState<ClientState | null>(null);
   const [loading, setLoading] = useState(!isVisualDemo);
   const [error, setError] = useState('');
@@ -49,13 +51,17 @@ export function ClientDashboard() {
   if (error) return <ErrorState description={error} onRetry={load} />;
 
   const analytics = state?.analytics;
-  const confirmationRate = isVisualDemo ? 74 : Math.round(analytics?.confirmation_rate ?? 0);
+  const confirmationRate = isVisualDemo ? demoStats.confirmationRate : Math.round(analytics?.confirmation_rate ?? 0);
   const metrics: Metric[] = [
-    { label: 'Confirmados', value: isVisualDemo ? 184 : analytics?.confirmed ?? 0, helper: 'Presenças confirmadas', status: 'success' },
-    { label: 'Pendentes', value: isVisualDemo ? 49 : analytics?.pending ?? 0, helper: 'Ainda aguardam resposta', status: 'warning' },
-    { label: 'Não irão', value: isVisualDemo ? 15 : analytics?.declined ?? 0, helper: 'Respostas recusadas', status: 'info' },
+    { label: 'Confirmados', value: isVisualDemo ? demoStats.confirmed : analytics?.confirmed ?? 0, helper: 'Presenças confirmadas', status: 'success' },
+    { label: 'Pendentes', value: isVisualDemo ? demoStats.pending : analytics?.pending ?? 0, helper: 'Ainda aguardam resposta', status: 'warning' },
+    { label: 'Não irão', value: isVisualDemo ? demoStats.declined : analytics?.declined ?? 0, helper: 'Respostas recusadas', status: 'info' },
   ];
-  const insights = isVisualDemo ? demoInsights : state?.insights ?? [];
+  const insights: Insight[] = isVisualDemo ? [
+    { severity: 'warning', title: 'Próxima decisão', message: `${demoStats.confirmed - demoStats.seated} convidados confirmados aguardam mesa.`, action: 'Acompanhar mapa de mesas' },
+    { severity: 'info', title: 'Documentos novos', message: `${demo.documents.filter(item => !item.viewed).length} arquivos aguardam sua leitura.`, action: 'Abrir documentos' },
+    { severity: 'info', title: 'Financeiro organizado', message: `${demoStats.financialRate}% do investimento já foi pago.`, action: 'Ver resumo financeiro' },
+  ] : state?.insights ?? [];
 
   return <>
     <PageHeader
@@ -67,15 +73,15 @@ export function ClientDashboard() {
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-white/15"><Heart /></div>
-          <h2 className="lumyra-display text-4xl font-black">{state?.event.name || 'Ana & João'}</h2>
+          <h2 className="lumyra-display text-4xl font-black">{state?.event.name || demo.event.couple}</h2>
           <p className="mt-2 max-w-2xl text-purple-50">
-            {state?.event.location ? `${state.event.location} · ${state.event.date || 'data em definição'}` : 'A Lumyra organiza o caminho até o grande dia.'}
+            {state?.event.location ? `${state.event.location} · ${state.event.date || 'data em definição'}` : `${demo.event.location} · ${new Date(`${demo.event.date}T12:00:00`).toLocaleDateString('pt-BR')}`}
           </p>
         </div>
         <div className="rounded-[1.7rem] border border-white/15 bg-white/15 p-5 text-center backdrop-blur">
           <p className="text-sm opacity-80">Confirmações</p>
           <strong className="text-5xl">{confirmationRate}%</strong>
-          <p className="mt-1 text-xs text-gold-100">{isVisualDemo ? 'demonstração visual' : 'atualizado pela API'}</p>
+          <p className="mt-1 text-xs text-gold-100">{isVisualDemo ? 'atualizado pela demo integrada' : 'atualizado pela API'}</p>
         </div>
       </div>
     </Card>
@@ -85,7 +91,7 @@ export function ClientDashboard() {
         <h2 className="flex items-center gap-2 text-xl font-black text-ink dark:text-white"><Sparkles className="text-gold-500" /> Resumo do evento</h2>
         <div className="mt-5 space-y-5">
           <ProgressBar value={confirmationRate} label="Confirmações recebidas" />
-          <ProgressBar value={Math.max(0, 100 - Math.round(((analytics?.message_errors ?? 0) / Math.max(analytics?.total_guests ?? 1, 1)) * 100))} label="Comunicações sem erro" />
+          <ProgressBar value={isVisualDemo ? Math.round((demo.messages.filter(item => item.status !== 'failed').length / Math.max(demo.messages.length, 1)) * 100) : Math.max(0, 100 - Math.round(((analytics?.message_errors ?? 0) / Math.max(analytics?.total_guests ?? 1, 1)) * 100))} label="Comunicações sem erro" />
         </div>
       </Card>
       <Card>

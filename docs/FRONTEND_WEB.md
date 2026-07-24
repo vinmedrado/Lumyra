@@ -80,8 +80,11 @@ Em `/login`, existem botões:
 - Entrar como Noivos
 - Ver portal do convidado
 
-O login visual de assessoria/noivos não grava dados. O convite público de demonstração
-usa a API e persiste o RSVP no banco local para demonstrar o fluxo ponta a ponta.
+No deploy estático, assessoria, noivos e convite público usam um estado fictício
+compartilhado e versionado em `localStorage`. Assim, RSVP, sugestões musicais,
+mesas, documentos, financeiro e comunicações podem ser demonstrados ponta a ponta
+sem publicar o backend. Com tokens reais, os clientes de API continuam disponíveis
+para a execução local da arquitetura completa.
 
 ## Rotas criadas
 

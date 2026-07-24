@@ -15,10 +15,10 @@ Lumyra é uma plataforma SaaS para operação de eventos sociais e corporativos,
 
 > Projeto preparado para portfólio premium, demonstração técnica, GitHub público e evolução futura para produto SaaS real.
 
-> Estado atual: os fluxos de login, dashboards, convidados e RSVP público usam a
-> API real. Parte dos módulos administrativos e da área dos noivos ainda representa
-> o roadmap com estados de integração. Consulte a
-> [auditoria técnica](docs/PROJECT_AUDIT.md).
+> Estado atual: a demonstração pública cobre as três personas e todos os módulos
+> principais. RSVP, convidados, mesas, financeiro, documentos, campanhas,
+> notificações, playlist e auditoria compartilham um estado persistente no navegador.
+> O backend completo permanece documentado e disponível no repositório.
 
 ## Live Demo
 
@@ -27,7 +27,9 @@ Lumyra é uma plataforma SaaS para operação de eventos sociais e corporativos,
 O deploy público executa o frontend em modo de portfólio, sem backend hospedado.
 Use os acessos de demonstração na tela de login ou abra o
 [convite familiar interativo](https://lumyra-events.netlify.app/guest/lumyra-demo-invitation-token).
-As interações públicas são simuladas somente no navegador e não armazenam dados.
+As interações públicas são simuladas e persistidas somente no navegador do visitante,
+sem envio de dados pessoais ou dependência de um backend público. A barra de
+demonstração permite restaurar o cenário inicial.
 Cada atualização da branch `main` validada no GitHub dispara automaticamente um
 novo build de produção no Netlify.
 
@@ -49,6 +51,8 @@ novo build de produção no Netlify.
 - **WhatsApp auditável** com templates, logs, retries e status por convidado.
 - **Documentos e financeiro** com estrutura preparada para produção.
 - **Demo mode** para apresentação sem depender de login real.
+- **Demo integrada entre personas**: uma resposta do convite aparece nos painéis
+  dos noivos e da assessoria, nas notificações, no feed e na auditoria.
 
 ---
 

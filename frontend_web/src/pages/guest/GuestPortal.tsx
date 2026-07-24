@@ -10,6 +10,7 @@ import { MusicSuggestionForm } from '../../components/ui/MusicSuggestionForm';
 import { Select } from '../../components/ui/Select';
 import { SpotifyPlaylistCard } from '../../components/ui/SpotifyPlaylistCard';
 import logoDark from '../../assets/branding/lumyra-logo-dark.svg';
+import { demoActions, useDemoStore } from '../../demo/demoStore';
 import { DEMO_GUEST_TOKEN, demoGuestPortalContext } from '../../lib/demoData';
 import { guestPortalApi, isDemoMode } from '../../services/api';
 import type { GuestPortalContext, GuestResponseStatus } from '../../types/domain';
@@ -20,6 +21,7 @@ export function GuestPortal() {
   const [, params] = useRoute('/guest/:token');
   const token = params?.token || '';
   const isStaticDemo = isDemoMode() && token === DEMO_GUEST_TOKEN;
+  const demoState = useDemoStore();
   const [context, setContext] = useState<GuestPortalContext | null>(null);
   const [statuses, setStatuses] = useState<Record<number, GuestResponseStatus>>({});
   const [phone, setPhone] = useState('');
@@ -32,12 +34,46 @@ export function GuestPortal() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
 
+  const staticDemoContext = useMemo<GuestPortalContext>(() => {
+    const familyMembers = demoState.guests.filter(guest => [101, 102, 103].includes(guest.id));
+    const leadGuest = familyMembers[0];
+    return {
+      ...demoGuestPortalContext,
+      event: {
+        id: demoState.event.id,
+        name: demoState.event.name,
+        date: `${new Date(`${demoState.event.date}T12:00:00`).toLocaleDateString('pt-BR', { dateStyle: 'long' })} · ${demoState.event.ceremonyTime}`,
+        location: demoState.event.location,
+      },
+      invitation: {
+        ...demoGuestPortalContext.invitation,
+        members: familyMembers.map(guest => ({
+          id: guest.id,
+          name: guest.name,
+          category: guest.category,
+          status: guest.status,
+        })),
+      },
+      response: {
+        phone: leadGuest?.phone || '',
+        needs_bus: familyMembers.some(guest => guest.needsBus),
+        dietary_restrictions: familyMembers.find(guest => guest.dietary)?.dietary || '',
+      },
+      playlist: {
+        playlist_url: demoState.playlist.url,
+        title: demoState.playlist.title,
+        description: demoState.playlist.description,
+        etiquette_message: demoState.playlist.etiquette,
+      },
+    };
+  }, [demoState]);
+
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
       const data = isStaticDemo
-        ? demoGuestPortalContext
+        ? staticDemoContext
         : await guestPortalApi.read(token);
       setContext(data);
       setStatuses(Object.fromEntries(data.invitation.members.map(member => [member.id, member.status])));
@@ -51,7 +87,7 @@ export function GuestPortal() {
     } finally {
       setLoading(false);
     }
-  }, [isStaticDemo, token]);
+  }, [isStaticDemo, staticDemoContext, token]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -77,6 +113,14 @@ export function GuestPortal() {
         dietary_restrictions: dietary,
         notes,
       };
+      if (isStaticDemo) {
+        demoActions.submitFamilyRsvp({
+          members: payload.members.map(member => ({ guestId: member.guest_id, status: member.status })),
+          phone,
+          needsBus,
+          dietary,
+        });
+      }
       const result = isStaticDemo
         ? { members: payload.members.map(member => ({ id: member.guest_id, status: member.status })) }
         : await guestPortalApi.submit(token, payload);
@@ -96,7 +140,7 @@ export function GuestPortal() {
     <Card className="max-w-lg text-center">
       <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-50 text-emerald-600"><CheckCircle2 size={34} /></div>
       <h1 className="lumyra-display mt-4 text-4xl font-black text-ink dark:text-white">Resposta enviada</h1>
-      <p className="mt-2 text-slate-500 dark:text-slate-300">A confirmação de <strong>{context.invitation.label}</strong> foi registrada na Lumyra.</p>
+      <p className="mt-2 text-slate-500 dark:text-slate-300">A confirmação de <strong>{context.invitation.label}</strong> foi {isStaticDemo ? 'atualizada em toda a demonstração' : 'registrada na Lumyra'}.</p>
       <div className="mt-5 rounded-3xl bg-brand-50 p-4 text-left text-sm text-slate-600 dark:bg-white/10 dark:text-slate-300">
         <p><strong>Confirmados:</strong> {confirmedCount} de {context.invitation.members.length}</p>
         <p><strong>Transporte:</strong> {needsBus ? 'solicitado' : 'não necessário'}</p>
@@ -130,7 +174,7 @@ export function GuestPortal() {
         </div>
 
         <form onSubmit={submit} className="grid gap-5">
-          {isStaticDemo && <p className="rounded-2xl border border-gold-300/30 bg-gold-300/10 px-4 py-3 text-sm font-bold text-gold-100">Demo interativa de portfólio · nenhuma informação será enviada ou armazenada.</p>}
+          {isStaticDemo && <p className="rounded-2xl border border-gold-300/30 bg-gold-300/10 px-4 py-3 text-sm font-bold text-gold-100">Demo interativa de portfólio · os dados ficam somente neste navegador e podem ser restaurados a qualquer momento.</p>}
           <div className="rounded-3xl border border-white/10 bg-white/10 p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
