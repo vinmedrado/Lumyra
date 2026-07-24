@@ -9,6 +9,7 @@
 ![SQLite](https://img.shields.io/badge/SQLite-Portfolio%20Mode-003B57?logo=sqlite&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Deploy--ready-2496ED?logo=docker&logoColor=white)
 ![WebSocket](https://img.shields.io/badge/WebSocket-Realtime-8B5CF6)
+[![Netlify](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?logo=netlify&logoColor=white)](https://lumyra-events.netlify.app)
 
 Lumyra é uma plataforma SaaS para operação de eventos sociais e corporativos, conectando assessorias, noivos/clientes e convidados em uma experiência moderna com RSVP, WhatsApp, formulários dinâmicos, mapa de mesas, financeiro, documentos, analytics, workflows, workers e colaboração em tempo real.
 
@@ -18,6 +19,15 @@ Lumyra é uma plataforma SaaS para operação de eventos sociais e corporativos,
 > API real. Parte dos módulos administrativos e da área dos noivos ainda representa
 > o roadmap com estados de integração. Consulte a
 > [auditoria técnica](docs/PROJECT_AUDIT.md).
+
+## Live Demo
+
+**[Abrir Lumyra no Netlify](https://lumyra-events.netlify.app)**
+
+O deploy público executa o frontend em modo de portfólio, sem backend hospedado.
+Use os acessos de demonstração na tela de login ou abra o
+[convite familiar interativo](https://lumyra-events.netlify.app/guest/lumyra-demo-invitation-token).
+As interações públicas são simuladas somente no navegador e não armazenam dados.
 
 ---
 

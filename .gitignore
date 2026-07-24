@@ -49,3 +49,6 @@ Thumbs.db
 htmlcov/
 *.tmp
 *.bak
+
+# Local Netlify folder
+.netlify
