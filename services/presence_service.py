@@ -63,7 +63,7 @@ def acquire_lock(tenant_id: int, user_id: int | None, entity_type: str, entity_i
         existing = conn.execute('SELECT * FROM entity_locks WHERE tenant_id=? AND entity_type=? AND entity_id=? AND locked_until>?', (int(tenant_id), entity_type, int(entity_id), now.isoformat(timespec='seconds'))).fetchone()
         if existing and existing['user_id'] != user_id:
             return {'locked': False, 'lock': dict(existing)}
-        conn.execute('''INSERT INTO entity_locks(tenant_id,user_id,entity_type,entity_id,locked_until) VALUES(?,?,?,?,?)
+        conn.execute('''INSERT INTO entity_locks(tenant_id,user_id,entity_type,entity_id,locked_until,created_at) VALUES(?,?,?,?,?,?)
                         ON CONFLICT(tenant_id,entity_type,entity_id) DO UPDATE SET user_id=excluded.user_id,locked_until=excluded.locked_until''',
-                     (int(tenant_id), user_id, entity_type, int(entity_id), expires))
+                     (int(tenant_id), user_id, entity_type, int(entity_id), expires, now.isoformat(timespec='seconds')))
     return {'locked': True, 'locked_until': expires}

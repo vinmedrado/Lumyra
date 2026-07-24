@@ -42,11 +42,12 @@ def create_notification(
 ) -> dict[str, Any]:
     ensure_notification_schema()
     severity = severity if severity in VALID_SEVERITIES else 'info'
+    created_at = datetime.now().isoformat(timespec='seconds')
     with connect() as conn:
         cur = conn.execute(
-            '''INSERT INTO notifications(tenant_id,user_id,type,title,message,severity,is_read,related_entity_type,related_entity_id)
-               VALUES(?,?,?,?,?,?,0,?,?)''',
-            (int(tenant_id), user_id, notification_type or severity, title.strip() or 'Nova notificação', message.strip(), severity, related_entity_type, related_entity_id),
+            '''INSERT INTO notifications(tenant_id,user_id,type,title,message,severity,is_read,created_at,related_entity_type,related_entity_id)
+               VALUES(?,?,?,?,?,?,0,?,?,?)''',
+            (int(tenant_id), user_id, notification_type or severity, title.strip() or 'Nova notificação', message.strip(), severity, created_at, related_entity_type, related_entity_id),
         )
         row = conn.execute('SELECT * FROM notifications WHERE id=?', (cur.lastrowid,)).fetchone()
     return dict(row)

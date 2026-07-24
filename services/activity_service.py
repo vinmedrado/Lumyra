@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 from repositories.database import connect, init_db
 
@@ -24,8 +25,12 @@ def ensure_activity_schema() -> None:
 
 def record_activity(tenant_id: int = 1, message: str = '', action_type: str = 'system', user_id: int | None = None, entity_type: str | None = None, entity_id: int | None = None) -> dict[str, Any]:
     ensure_activity_schema()
+    created_at = datetime.now().isoformat(timespec='seconds')
     with connect() as conn:
-        cur = conn.execute('''INSERT INTO activity_feed(tenant_id,user_id,action_type,entity_type,entity_id,message) VALUES(?,?,?,?,?,?)''', (int(tenant_id), user_id, action_type, entity_type, entity_id, message))
+        cur = conn.execute(
+            '''INSERT INTO activity_feed(tenant_id,user_id,action_type,entity_type,entity_id,message,created_at) VALUES(?,?,?,?,?,?,?)''',
+            (int(tenant_id), user_id, action_type, entity_type, entity_id, message, created_at),
+        )
         row = conn.execute('SELECT * FROM activity_feed WHERE id=?', (cur.lastrowid,)).fetchone()
     return dict(row)
 
