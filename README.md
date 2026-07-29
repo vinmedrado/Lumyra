@@ -1,37 +1,38 @@
 # Lumyra
 
-Modern Event Operations Platform.
-
-Lumyra e uma plataforma SaaS para operacao de eventos sociais e corporativos, conectando assessorias, clientes e convidados em uma experiencia com RSVP, WhatsApp, formularios dinamicos, mapa de mesas, financeiro, documentos, analytics, workflows e realtime.
-
-[Live demo](https://lumyra-events.netlify.app)
-
 ## Visao geral
 
-O projeto foi desenhado como um produto premium para operacao de eventos. A proposta e unir experiencia do convidado, controle operacional e comunicacao em tempo real.
+Modern Event Operations Platform. Lumyra e uma plataforma SaaS para operacao de eventos sociais e corporativos, conectando assessorias, clientes e convidados em uma experiencia com RSVP, WhatsApp, formularios dinamicos, mapa de mesas, financeiro, documentos, analytics, workflows e realtime.
 
-## Problema que resolve
+## Problema
 
 - Operacao fragmentada entre planilhas, mensagens e ferramentas isoladas.
 - Falta de rastreabilidade em RSVP, mesas e comunicacao.
 - Dificuldade de manter experiencia premium para convidados.
 
+## Solucao
+
+O projeto foi desenhado como um produto premium para operacao de eventos. A proposta e unir experiencia do convidado, controle operacional e comunicacao em tempo real.
+
+[Live demo](https://lumyra-events.netlify.app)
+
 ## Arquitetura
 
-```text
-frontend_web/   React, Vite, TypeScript e Tailwind
-backend/        FastAPI, rotas, schemas e JWT
-services/       regras de negocio
-workers/        jobs e tarefas em background
-db/             SQLAlchemy e models
-migrations/     Alembic
-docs/           documentacao tecnica
+```mermaid
+flowchart TD
+  G[Convidado] --> R[Portal RSVP]
+  A[Assessoria] --> F[Frontend React]
+  F --> B[FastAPI]
+  B --> D[SQLite / PostgreSQL]
+  B --> W[Workers]
+  B --> S[Scheduler]
+  B --> WS[WebSocket Realtime]
+  D --> N[Notifications / Analytics]
 ```
 
-## Screenshots
+## Tecnologias
 
-![Brand board](frontend_web/src/assets/branding/lumyra-brand-board.jpg)
-![Portfolio screenshot](https://raw.githubusercontent.com/vinmedrado/portfolio/main/images/lumyra.png)
+Python, FastAPI, React, TypeScript, Tailwind CSS, WebSocket, SQLite, Docker, Netlify.
 
 ## Funcionalidades
 
@@ -44,9 +45,18 @@ docs/           documentacao tecnica
 - Realtime indicator e WebSocket.
 - Demo integrada entre personas.
 
-## Tecnologias
+## Demonstração
 
-Python, FastAPI, React, TypeScript, Tailwind CSS, WebSocket, SQLite, Docker, Netlify.
+- Demo publica: [lumyra-events.netlify.app](https://lumyra-events.netlify.app)
+- Convite de demonstração: link publico do portal do convidado
+
+## GIF
+
+TODO: gravar um GIF curto com login, navegacao entre personas e uma interacao realtime.
+
+## Screenshots
+
+![Lumyra](assets/demo/overview.png)
 
 ## Como executar
 
@@ -85,6 +95,7 @@ migrations/     migrations
 docs/           doc tecnica
 storage/        armazenamento local
 tests/          testes
+assets/demo/    screenshots e GIFs
 ```
 
 ## Roadmap
@@ -92,6 +103,20 @@ tests/          testes
 - Adicionar galerias reais de telas no README.
 - Continuar a consolidacao da migracao para PostgreSQL.
 - Evoluir RBAC e observabilidade.
+
+## Principais aprendizados
+
+- Arquitetura em camadas
+- APIs REST
+- Docker
+- PostgreSQL
+- Machine Learning
+- FastAPI
+- React
+- Clean Architecture
+- Design Patterns
+- Automacoes
+- Engenharia de Dados
 
 ## Licenca
 
