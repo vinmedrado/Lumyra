@@ -58,7 +58,7 @@ Python, FastAPI, React, TypeScript, Tailwind CSS, WebSocket, SQLite, Docker, Net
 
 ## GIF
 
-TODO: gravar um GIF curto com login, navegacao entre personas e uma interacao realtime.
+![Lumyra demo](assets/demo/demo.gif)
 
 ## Screenshots
 
