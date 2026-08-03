@@ -8,17 +8,17 @@
 
 ## Visao geral
 
-Modern Event Operations Platform. Lumyra e uma plataforma SaaS para operacao de eventos sociais e corporativos, conectando assessorias, clientes e convidados em uma experiencia com RSVP, WhatsApp, formularios dinamicos, mapa de mesas, financeiro, documentos, analytics, workflows e realtime.
+Lumyra e uma plataforma SaaS para operacao de eventos sociais e corporativos, conectando assessorias, clientes e convidados em uma experiencia com RSVP, WhatsApp, formularios dinamicos, mapa de mesas, financeiro, documentos, analytics, workflows e realtime.
 
 ## Problema
 
 - Operacao fragmentada entre planilhas, mensagens e ferramentas isoladas.
 - Falta de rastreabilidade em RSVP, mesas e comunicacao.
-- Dificuldade de manter experiencia premium para convidados.
+- Dificuldade de manter experiencia consistente para convidados.
 
 ## Solucao
 
-O projeto foi desenhado como um produto premium para operacao de eventos. A proposta e unir experiencia do convidado, controle operacional e comunicacao em tempo real.
+O projeto foi desenhado para unir experiencia do convidado, controle operacional e comunicacao em tempo real.
 
 [Live demo](https://lumyra-events.netlify.app)
 
@@ -51,10 +51,10 @@ Python, FastAPI, React, TypeScript, Tailwind CSS, WebSocket, SQLite, Docker, Net
 - Realtime indicator e WebSocket.
 - Demo integrada entre personas.
 
-## Demonstração
+## Demonstracao
 
 - Demo publica: [lumyra-events.netlify.app](https://lumyra-events.netlify.app)
-- Convite de demonstração: link publico do portal do convidado
+- Convite de demonstracao: link publico do portal do convidado
 
 ## GIF
 
@@ -116,14 +116,11 @@ assets/demo/    screenshots e GIFs
 - APIs REST
 - Docker
 - PostgreSQL
-- Machine Learning
 - FastAPI
 - React
-- Clean Architecture
-- Design Patterns
 - Automacoes
 - Engenharia de Dados
 
 ## Licenca
 
-TODO.
+MIT.
