@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 import pytest
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
@@ -62,7 +64,7 @@ def test_public_music_suggestion_derives_scope_from_guest_token():
     init_db()
     with connect() as conn:
         event_id = ensure_default_event(conn)
-        conn.execute("UPDATE events SET tenant_id=1 WHERE id=?", (event_id,))
+        conn.execute("UPDATE events SET tenant_id=1, date=? WHERE id=?", ((date.today() + timedelta(days=60)).isoformat(), event_id))
         guest_id = int(
             conn.execute(
                 """

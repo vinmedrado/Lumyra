@@ -13,9 +13,10 @@ _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") if CryptConte
 
 def hash_password(password: str) -> str:
     password = password or ""
-    if _pwd_context:
-        return _pwd_context.hash(password)
-    return "sha256$" + hashlib.sha256(password.encode("utf-8")).hexdigest()
+    if _pwd_context is None:
+        # Never silently create new unsalted hashes if bcrypt is unavailable.
+        raise RuntimeError("Secure password hashing is unavailable; install passlib[bcrypt].")
+    return _pwd_context.hash(password)
 
 
 def verify_password(password: str, password_hash: str | None) -> bool:

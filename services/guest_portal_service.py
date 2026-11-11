@@ -73,6 +73,15 @@ def ensure_demo_guest_portal() -> str:
                     ),
                 ).lastrowid
             )
+    # Demo invitations must remain usable beyond the original 2026 fixture date.
+    # Restrict the date refresh to the named synthetic demo, not arbitrary events.
+    with connect() as conn:
+        event = conn.execute("SELECT name, date FROM events WHERE id=?", (event_id,)).fetchone()
+        if event and event["name"] == "Casamento Ana & João":
+            event_date = str(event["date"] or "")
+            if not event_date or event_date < datetime.now().date().isoformat():
+                new_date = (datetime.now() + timedelta(days=60)).date().isoformat()
+                conn.execute("UPDATE events SET date=? WHERE id=?", (new_date, event_id))
     expires_at = (datetime.now() + timedelta(days=365)).isoformat(timespec="seconds")
     ensure_guest_public_link(event_id, guest_id, DEMO_GUEST_TOKEN, expires_at)
     with connect() as conn:
