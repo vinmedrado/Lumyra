@@ -18,8 +18,8 @@ def _create_family_invitation() -> tuple[int, list[int], str]:
                 """
                 INSERT INTO events(tenant_id, name, date, location)
                 VALUES (1, 'Evento Família API', ?, 'Espaço Teste')
-                """
-                , (future_date,)
+                """,
+                (future_date,),
             ).lastrowid
         )
         guest_ids = []
