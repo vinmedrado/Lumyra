@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 from fastapi.testclient import TestClient
 
 from backend.main import app
@@ -10,12 +12,14 @@ from services.guest_portal_service import ensure_link_for_guest
 def _create_family_invitation() -> tuple[int, list[int], str]:
     init_db()
     with connect() as conn:
+        future_date = (date.today() + timedelta(days=60)).isoformat()
         event_id = int(
             conn.execute(
                 """
                 INSERT INTO events(tenant_id, name, date, location)
-                VALUES (1, 'Evento Família API', '2026-10-10', 'Espaço Teste')
+                VALUES (1, 'Evento Família API', ?, 'Espaço Teste')
                 """
+                , (future_date,)
             ).lastrowid
         )
         guest_ids = []
