@@ -20,7 +20,6 @@ jobs:
         working-directory: frontend_web
         run: |
           npm install --save-exact axios@1.21.1 --ignore-scripts --no-fund
-          npm audit fix --ignore-scripts --no-fund
       - name: Verify build, tests and production audit
         working-directory: frontend_web
         run: |
